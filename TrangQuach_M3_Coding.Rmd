@@ -1,0 +1,83 @@
+---
+title: "Trang Quach - Coding exercise"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(dslabs)
+
+help("gapminder")
+str(gapminder)
+summary(gapminder)
+class(gapminder) #gapminder is a data frame
+
+
+#take data from African countries only
+africadata <- gapminder[gapminder$continent=="Africa",]
+
+str(africadata)
+summary(africadata)
+
+#Create two new variables (obj1, obj2) from africadata
+obj1 <- africadata[,c("infant_mortality","life_expectancy")]
+obj2 <- africadata[,c("population", "life_expectancy")]
+
+str(obj1)
+str(obj2)
+summary(obj1)
+summary(obj2)
+
+#ploting
+
+plot(obj1$infant_mortality, obj1$life_expectancy, 
+     xlab = "Infant mortality", ylab = "Life expectancy", 
+     main="Correlation of infant mortality and life expectancy in Africa", cex.main=0.9)
+plot(log(obj2$population), obj2$life_expectancy, 
+     xlab = "log of population", ylab = "life expectancy",
+     main = 'Correlation of population size and life expectancy in Africa', cex.main=0.9)
+
+#The streaks present countries. Generally, all countries with different population size has increase life expectancy and population over time
+
+
+#Gapmider report data from 1960 to 2016. The table below showed number of missing and non-missing in infant_mortality in every year
+table(as.factor(africadata$year), is.na(africadata$infant_mortality),
+      dnn = c("year", "Missing infant mortality"))
+
+#subset data from africadata which contain only year 2000
+year2000 <- africadata[africadata$year==2000,]
+str(year2000)
+summary(year2000)
+
+#plotting again
+plot(year2000$infant_mortality, year2000$life_expectancy,
+     xlab = "Infant mortality", ylab = "Life expectancy", 
+     main="Correlation of infant mortality and life expectancy in
+     Africa in 2000", cex.main=0.9)
+
+plot(log(year2000$population), year2000$life_expectancy,
+     xlab = "log of population", ylab = "life expectancy",
+     main = 'Population size and life expectancy in Africa in 2000',
+     cex.main=0.9)
+
+fit1 <- lm(year2000$life_expectancy ~ year2000$infant_mortality)
+fit2 <- lm(year2000$life_expectancy ~ year2000$population)
+
+summary(fit1)
+summary(fit2)
+
+
+
+
+```
+
+# Conclusion
+Infant mortality was statistically significant with life expectancy (t-value=-6.59, d.f=49, p-value=2.83e-08). When infant mortality rate increase one unit, the life expectancy decrease 0.189 (SE= 0.0287).
+
+Population size was not associated with life expectancy (t-value=0.505,
+d.f=49, p-value=0.616). 
+
+
+
+
