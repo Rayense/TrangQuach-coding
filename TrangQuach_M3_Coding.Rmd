@@ -81,3 +81,64 @@ d.f=49, p-value=0.616).
 
 
 
+
+
+
+
+
+
+
+# Tidyverse Alternate 
+## Checking the Data
+We will first load all the relevant libraries in order to use the tidyverse functions. While dslabs is already input above, I repeated in order to have information in one place. This will include dslabs, tidyverse, and skimr. 
+
+```{r}
+library(dslabs)
+library(tidyverse)
+library(skimr)
+
+```
+
+Once that has taken place, we can start looking at our data set with the glimpse and skim functions. 
+
+```{r}
+glimpse(gapminder)
+skim(gapminder)
+
+```
+
+As we can see, these present summaries of our data set that are a bit easier to read that what we saw with the summary function. 
+
+## Exploring the Data
+Now that we've checked the data set, we want to work with it a bit to generate some plots. First, we are going to filter and select to extract the African countries from gapminder, and then leave out all variables except infant_mortality, life_expectancy, population, and country. 
+
+From here, we will also plot the data for the remaining variables, starting with life expectancy as a function of infant mortality.
+
+```{r}
+gapminder %>%
+  filter(continent == "Africa") %>%
+  select(infant_mortality, life_expectancy, population, country) %>%
+  ggplot() + geom_point(aes(infant_mortality, life_expectancy, col= country)) + labs(title= "Life Expectancy as a Function of Infant Mortality by African Country")
+```
+
+As we would expect, as infant mortality increases, life expectancy decreases. We can also see that 226 values have been removed as they are missing parameter values. 
+
+We will now look at life expectancy as a function of population. 
+```{r}
+gapminder %>%
+  filter(continent == "Africa") %>%
+  select(infant_mortality, life_expectancy, population, country) %>%
+  ggplot() + geom_point(aes(population, life_expectancy, col= country))  + labs(title= "Life Expectancy as a Function of Population by African Country")
+```
+One of the issues we found with the basicR functions is that we could see these same strings of data points but could only make educated guesses as to why the strings of data occured. Here, we can see that overall, as the population increases, the life expectancy increases; however, this trend is is fairly contained within each country. 
+
+Finally, we want to pull out the African data we've been using, but only for the year 2000. From here, we are going to create a third ggplot with life_expectancy as a function of infant_mortality. We will also include a linear model fit for this data.
+
+```{r}
+gapminder %>%
+  filter(continent == "Africa", year == 2000) %>%
+  select(infant_mortality, life_expectancy, population, country) %>%
+  ggplot(aes(infant_mortality, life_expectancy)) + geom_point() +geom_smooth(method = "lm") + labs(title= "Life Expectancy as a Function of Infant Mortality in the Year 2000 in Africa")
+```
+
+We can see that the same trend from all years still holds true. As infant mortality increases, life expectancy decreases across Africa. 
